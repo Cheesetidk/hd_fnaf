@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Cheesets FNAF Launcher</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Special+Elite&family=Barlow+Condensed:wght@400;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#07090b; --panel:#0e1512; --line:#243629;
+  --phosphor:#c9d7c0; --dim:#72857a; --amber:#f0ab1f; --red:#d9341f;
+}
+*{box-sizing:border-box;margin:0}
+html{background:var(--bg)}
+body{
+  background:
+    radial-gradient(ellipse 70% 45% at 50% 0%,rgba(240,171,31,.10),transparent 70%),
+    radial-gradient(ellipse at 50% 100%,#0c1511 0%,var(--bg) 70%);
+  background-attachment:fixed;
+  color:var(--phosphor);font-family:"Barlow Condensed",system-ui,sans-serif;font-size:19px;
+  min-height:100vh;overflow-x:hidden;
+}
+main{max-width:1120px;margin:0 auto;padding:clamp(28px,6vw,72px) clamp(16px,4vw,40px) 40px}
+
+/* ---------- header ---------- */
+header{margin-bottom:48px}
+.rec{display:flex;align-items:center;gap:10px;color:var(--dim);margin-bottom:16px}
+.rec i{width:11px;height:11px;border-radius:50%;background:var(--red);box-shadow:0 0 12px var(--red);animation:blink 1.4s steps(1) infinite}
+@keyframes blink{50%{opacity:.15}}
+h1{
+  font-family:"Special Elite",serif;font-weight:400;line-height:.95;
+  font-size:clamp(42px,9.5vw,100px);color:#f0f4ea;
+  text-shadow:0 0 22px rgba(240,171,31,.35);
+  animation:flicker 8s infinite;
+}
+h1 span{display:block;color:var(--amber);text-shadow:0 0 26px rgba(240,171,31,.6)}
+@keyframes flicker{
+  0%,90%,93%,97%,100%{opacity:1}
+  91%{opacity:.3} 92%{opacity:.85} 95%{opacity:.4} 96%{opacity:.9}
+}
+.sub{margin-top:20px;max-width:44ch;color:var(--dim)}
+
+/* ---------- monitors ---------- */
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:22px}
+.feed{
+  display:block;text-decoration:none;color:inherit;
+  background:linear-gradient(180deg,#121c17,var(--panel));
+  border:1px solid var(--line);border-radius:6px;padding:10px 10px 14px;
+  box-shadow:0 14px 30px rgba(0,0,0,.45), inset 0 1px 0 rgba(255,255,255,.04);
+  transition:transform .18s,border-color .18s,box-shadow .18s;
+}
+.feed:hover,.feed:focus-visible{
+  outline:none;transform:translateY(-4px);border-color:var(--amber);
+  box-shadow:0 0 0 1px var(--amber),0 18px 40px rgba(240,171,31,.16);
+}
+.screen{
+  position:relative;aspect-ratio:16/10;overflow:hidden;border-radius:3px;
+  background:#050706;border:1px solid #1a271f;
+}
+.screen canvas{position:absolute;inset:0;width:100%;height:100%;image-rendering:pixelated;opacity:.32;transition:opacity .15s}
+.feed:hover .screen canvas,.feed:focus-visible .screen canvas{opacity:.85}
+.screen::after{ /* scanlines + vignette, card only */
+  content:"";position:absolute;inset:0;pointer-events:none;
+  background:
+    repeating-linear-gradient(to bottom,rgba(0,0,0,.35) 0 1px,transparent 1px 3px),
+    radial-gradient(ellipse at center,transparent 50%,rgba(0,0,0,.7) 100%);
+}
+.tag{
+  position:absolute;inset:0;display:grid;place-items:center;
+  font-family:"Special Elite",serif;font-size:clamp(40px,6vw,58px);
+  color:#e6efdf;text-shadow:0 0 14px rgba(201,215,192,.6);z-index:2;
+  transition:letter-spacing .2s;
+}
+.feed:hover .tag{animation:glitch .35s steps(2) 2}
+@keyframes glitch{
+  0%{transform:translate(0)} 25%{transform:translate(-3px,1px);text-shadow:3px 0 var(--red),-3px 0 #38e0ff}
+  50%{transform:translate(3px,-1px)} 75%{transform:translate(-2px,0);text-shadow:-3px 0 var(--red),3px 0 #38e0ff}
+  100%{transform:translate(0)}
+}
+.hud{position:absolute;z-index:3;font-size:15px;letter-spacing:.04em;color:var(--phosphor);text-shadow:0 0 4px #000}
+.hud.tl{top:7px;left:9px;display:flex;align-items:center;gap:6px}
+.hud.tl i{width:8px;height:8px;border-radius:50%;background:var(--red);animation:blink 1.4s steps(1) infinite}
+.hud.tr{top:7px;right:9px}
+.hud.bl{bottom:6px;left:9px;font-variant-numeric:tabular-nums}
+.hud.br{bottom:6px;right:9px;color:var(--amber)}
+
+.info{padding:14px 6px 0}
+.title{font-family:"Special Elite",serif;font-size:24px;line-height:1.1;color:#f0f4ea;margin-bottom:12px;min-height:2.2em}
+.go{
+  display:flex;justify-content:space-between;align-items:center;
+  border-top:1px solid var(--line);padding-top:10px;
+  color:var(--amber);font-weight:600;font-size:21px;
+}
+.go small{font-weight:400;font-size:15px;color:var(--dim)}
+
+.feed.off{opacity:.5;pointer-events:none;filter:grayscale(1)}
+.feed.off .screen canvas{opacity:.9}
+.feed.off .go{color:var(--dim)}
+.feed.off .hud.br::after{content:"NO SIGNAL";color:var(--red)}
+.feed:not(.off) .hud.br::after{content:"ONLINE"}
+
+footer{margin-top:56px;color:var(--dim);font-size:16px;max-width:70ch;line-height:1.35}
+kbd{border:1px solid var(--line);padding:0 6px;border-radius:3px;color:var(--phosphor);font-family:inherit}
+footer p+p{margin-top:8px}
+
+@media (prefers-reduced-motion:reduce){
+  h1,.rec i,.hud.tl i,.feed:hover .tag{animation:none}
+  .feed{transition:none}
+}
+</style>
+</head>
+<body>
+<main>
+  <header>
+    <div class="rec"><i></i>Live. Pick a camera.</div>
+    <h1>Cheesets<span>FNAF Launcher</span></h1>
+    <p class="sub">Every game in the repo, one click each. Each one opens in a new tab.</p>
+  </header>
+
+  <section class="grid" id="grid" aria-label="Games"></section>
+
+  <footer>
+    <p>In a game, press <kbd>-</kbd> <kbd>=</kbd> for fullscreen.</p>
+    <p>Not an official FNAF product. Not approved by or associated with Scott Cawthon.</p>
+  </footer>
+</main>
+
+<script>
+/* ------------------------------------------------------------------
+   Paths are relative to this index.html unless they are absolute URLs.
+   "tag" is the monitor label.
+------------------------------------------------------------------- */
+const GAMES = [
+  { name: "Five Nights at Freddy’s",   tag: "FNAF 1", path: "1/" },
+  { name: "Five Nights at Freddy’s 2", tag: "FNAF 2", path: "2/" },
+  { name: "Five Nights at Freddy’s 3", tag: "FNAF 3", path: "3/" },
+  { name: "Five Nights at Freddy’s 4", tag: "FNAF 4", path: "4/" },
+  { name: "FNAF World",                 tag: "WORLD",  path: "w/" },
+  { name: "FNAF Sister Location",       tag: "SL",     path: "https://irv77.github.io/hd_fnaf/sl/" },
+  { name: "Pizzeria Simulator",         tag: "PS",     path: "ps/" },
+  { name: "Ultimate Custom Night",      tag: "UCN",    path: "ucn/" }
+];
+
+const grid = document.getElementById("grid");
+const screens = [];
+const pad = n => String(n).padStart(2, "0");
+
+GAMES.forEach((g, i) => {
+  const a = document.createElement("a");
+  a.className = "feed";
+  a.href = g.path;
+  a.target = "_blank";
+  a.rel = "noopener";
+  a.innerHTML =
+    '<div class="screen">' +
+      '<canvas width="80" height="50"></canvas>' +
+      '<div class="tag"></div>' +
+      '<div class="hud tl"><i></i>REC</div>' +
+      '<div class="hud tr">CAM ' + pad(i + 1) + '</div>' +
+      '<div class="hud bl"></div>' +
+      '<div class="hud br"></div>' +
+    '</div>' +
+    '<div class="info"><div class="title"></div>' +
+    '<div class="go">Launch <small>opens in new tab</small></div></div>';
+  a.querySelector(".tag").textContent = g.tag;
+  a.querySelector(".title").textContent = g.name;
+  grid.appendChild(a);
+
+  const cv = a.querySelector("canvas");
+  screens.push({ ctx: cv.getContext("2d"), tc: a.querySelector(".bl"), t: 600 + i * 1337 });
+
+  // Dim games whose folder isn't found (works once hosted, not from file://)
+  if (location.protocol.startsWith("http")) {
+    fetch(g.path, { method: "HEAD" })
+      .then(r => { if (r.status === 404) a.classList.add("off"); })
+      .catch(() => {});
+  }
+});
+
+// Static lives only inside the monitors
+const W = 80, H = 50;
+const buf = document.createElement("canvas"); buf.width = W; buf.height = H;
+const bctx = buf.getContext("2d");
+const img = bctx.createImageData(W, H);
+function snow(){
+  const d = img.data;
+  for (let i = 0; i < d.length; i += 4){
+    const v = Math.random() * 255;
+    d[i] = d[i+1] = d[i+2] = v; d[i+3] = 255;
+  }
+  bctx.putImageData(img, 0, 0);
+  screens.forEach(s => s.ctx.drawImage(buf, 0, 0));
+}
+function clock(){
+  screens.forEach(s => {
+    s.t++;
+    s.tc.textContent = pad(Math.floor(s.t / 3600) % 24) + ":" + pad(Math.floor(s.t / 60) % 60) + ":" + pad(s.t % 60);
+  });
+}
+const still = matchMedia("(prefers-reduced-motion: reduce)").matches;
+snow(); clock();
+if (!still){
+  setInterval(snow, 70);
+  setInterval(clock, 1000);
+}
+</script>
+</body>
+</html>
